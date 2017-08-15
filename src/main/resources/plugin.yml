@@ -1,0 +1,9 @@
+name: RustCraft
+author: NathanPB
+version: 2.2
+main: cf.nathanpb.RustCrafto.Core
+
+commands:
+ bullet:
+  description: Spelling main command
+  usage: /spelling <cheat|recipes|mana|selfs|burnout|exp|level>
