@@ -1,6 +1,6 @@
 package cf.nathanpb.RustCrafto;
 
-import cf.nathanpb.RustCrafto.item.bullets.TestBullet;
+import cf.nathanpb.RustCrafto.item.guns.MyGun;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,7 +15,7 @@ public class Core extends JavaPlugin{
     @Override
     public void onEnable() {
         super.onEnable();
-        this.getCommand("bullet").setExecutor(new TestBullet());
+        this.getCommand("bullet").setExecutor(new MyGun());
     }
 
     @Override
