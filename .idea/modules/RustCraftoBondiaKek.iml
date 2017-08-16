@@ -32,5 +32,23 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Gradle: reflections-0.9.10">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/reflections-0.9.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Gradle: javassist">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../libs/javassist.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

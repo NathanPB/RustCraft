@@ -1,13 +1,15 @@
-package cf.nathanpb.RustCrafto.item.guns;
+package cf.nathanpb.RustCrafto.guns;
 
 import cf.nathanpb.RustCrafto.Core;
 import cf.nathanpb.RustCrafto.bullets.Bullet;
+import net.minecraft.server.v1_8_R1.EntityInsentient;
 import net.minecraft.server.v1_8_R1.ItemStack;
 import net.minecraft.server.v1_8_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,6 +23,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Gun implements Listener{
     private ItemStack item;
     private boolean reloading = false;
+
+    protected double recoilLeft = 0;
+    protected double recoilRight = 0;
+    protected double recoilUp = 0;
+    protected double recoilDown = 0;
 
     protected Gun(){}
     protected Gun(ItemStack stack){
@@ -42,7 +49,7 @@ public class Gun implements Listener{
         }
     }
 
-    protected void tryToShot(HumanEntity en){
+    public void tryToShot(HumanEntity en){
         if(reloading) return;
         if(getMagazine() <= 0){
             reload(en);
@@ -53,6 +60,7 @@ public class Gun implements Listener{
     protected void shot(HumanEntity en){
         getBullet().spawn(en.getEyeLocation());
         this.setMagazine(getMagazine()-1);
+        applyRecoil(en);
     }
     protected void reload(HumanEntity e){
         reloading = true;
@@ -106,5 +114,17 @@ public class Gun implements Listener{
     protected Integer getReloadingTime(){
         if(!this.item.getTag().hasKey("RELOADING_TIME")) return null;
         return this.item.getTag().getInt("RELOADING_TIME");
+    }
+    protected void applyRecoil(HumanEntity p){
+        float pitch = p.getLocation().getPitch();
+        float yaw = p.getLocation().getYaw();
+        yaw += recoilRight;
+        yaw -= recoilLeft;
+        pitch -= recoilUp;
+        pitch += recoilDown;
+        Location l = p.getLocation();
+        l.setYaw(yaw);
+        l.setPitch(pitch);
+        p.teleport(l);
     }
 }

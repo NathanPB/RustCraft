@@ -16,4 +16,6 @@ dependencies {
 }
 jar {
     from zipTree('libs/ProjectMetadata-1.0-SNAPSHOT-all.jar')
+    from zipTree('libs/javassist.jar')
+    from zipTree('libs/reflections-0.9.10.jar')
 }
