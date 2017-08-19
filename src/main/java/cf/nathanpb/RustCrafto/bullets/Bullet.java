@@ -125,7 +125,7 @@ public class Bullet implements Listener{
 
     protected void playTriggerEffect(){
         projectile.getWorld().spawnParticle(Particle.SMOKE_LARGE, projectile.getLocation(), 5);
-        projectile.getWorld().playSound(spawnLocation, Sound.ENTITY_FIREWORK_LARGE_BLAST, 10, 10);
+        projectile.getWorld().playSound(spawnLocation, Sound.ENTITY_FIREWORK_BLAST, 10, 10);
     }
     protected void playPathEffect(){
         projectile.getWorld().spawnParticle(Particle.SMOKE_NORMAL, projectile.getLocation(), 5);
