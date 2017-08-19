@@ -5,12 +5,15 @@ import cf.nathanpb.RustCrafto.Core;
 import com.mojang.authlib.GameProfileRepository;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,14 +22,18 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,7 +56,13 @@ public class RustCraftItem implements Listener{
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
 
+        if(LeatherArmorColor != null) {
+            LeatherArmorMeta meta2 = (LeatherArmorMeta) meta;
+            meta2.setColor(LeatherArmorColor);
+            meta = meta2;
+        }
         item.setItemMeta(meta);
+
         item.setData(data);
         if(hideDurability){
             net.minecraft.server.v1_9_R1.ItemStack i2 = CraftItemStack.asNMSCopy(item);
@@ -62,11 +75,13 @@ public class RustCraftItem implements Listener{
     }
     protected RustCraftItem(){
         itemHashMap.put(this.getClass(), this);
+        onSTE();
     }
     protected boolean matchDurability = false;
     protected boolean matchData = false;
     protected int durability = 0;
     protected boolean hideDurability = false;
+    protected Color LeatherArmorColor = null;
 
     @EventHandler
     public void onPIE(PlayerInteractEvent e) throws Exception{
@@ -101,6 +116,18 @@ public class RustCraftItem implements Listener{
             onBlockBreak(e);
         }
     };
+    @EventHandler
+    public void onIBE(PlayerItemDamageEvent e){
+        if(instanceOf(e.getItem())) onDurabilityChange(e);
+    }
+    public void onSTE(){
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                onServerTick();
+            }
+        }.runTaskTimerAsynchronously(Core.getInstance(), 1, 0);
+    }
 
     private static List<Class> getAllItems(){
         return new ArrayList<>(new Reflections("cf.nathanpb.RustCrafto.item").getSubTypesOf(RustCraftItem.class));
@@ -141,6 +168,8 @@ public class RustCraftItem implements Listener{
     protected void onBlockBreak(BlockBreakEvent e){
         metadata.removeKey(e.getBlock().toString());
     }
+    protected void onDurabilityChange(PlayerItemDamageEvent e){};
+    protected void onServerTick(){};
 
     public void add(Inventory i){
         i.addItem(get());
@@ -150,6 +179,11 @@ public class RustCraftItem implements Listener{
         if(!(i.hasItemMeta() && i.getItemMeta().hasDisplayName())) return false;
         if(!i.getType().equals(material)) return false;
         if (matchData) if(!((Byte)i.getData().getData()).equals(data)) return false;
+        if(LeatherArmorColor != null) {
+            if(!(i.getItemMeta() instanceof LeatherArmorMeta)) return false;
+            LeatherArmorMeta meta = (LeatherArmorMeta) i.getItemMeta();
+            if(!meta.getColor().equals(LeatherArmorColor)) return false;
+        }
         if(!i.getItemMeta().getDisplayName().equals(name)) return false;
         if(matchDurability) if(!((Integer)((int)i.getDurability())).equals(((Integer) durability))) return false;
         return true;
@@ -158,5 +192,10 @@ public class RustCraftItem implements Listener{
         if(b == null) return false;
         if(!metadata.hasKey(b.toString())) return false;
         return metadata.get(b.toString(), String.class).equals(this.getClass().getName());
+    }
+
+    protected boolean isWearing(LivingEntity p){
+        if(Arrays.asList(p.getEquipment().getArmorContents()).contains(get())) return true;
+        return false;
     }
 }
