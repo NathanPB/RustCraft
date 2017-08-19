@@ -15,7 +15,7 @@ public class Core extends JavaPlugin{
     public static Core getInstance(){
         return (Core) Bukkit.getServer().getPluginManager().getPlugin("RustCraft");
     }
-    public static final File PlayerProfileDatabase = new File("ProjectMetadataObject/PlayerProfile");
+    public static final File PlayerProfileDatabase = new File("ProjectMetadataDatabase/PlayerProfile");
     @Override
     public void onEnable() {
         if(!PlayerProfileDatabase.exists()) PlayerProfileDatabase.mkdirs();
