@@ -24,9 +24,9 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Gradle: spigot-1.8">
+      <library name="Gradle: spigot-1.9-R0.1-SNAPSHOT-latest">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../libs/spigot-1.8.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../libs/spigot-1.9-R0.1-SNAPSHOT-latest.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

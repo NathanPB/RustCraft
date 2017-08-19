@@ -2,15 +2,17 @@ package cf.nathanpb.RustCrafto.bullets;
 
 import cf.nathanpb.RustCrafto.Core;
 import org.bukkit.Bukkit;
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -122,11 +124,11 @@ public class Bullet implements Listener{
     }
 
     protected void playTriggerEffect(){
-        spawnLocation.getWorld().playSound(spawnLocation, Sound.FIREWORK_BLAST, 10, 10);
-        spawnLocation.getWorld().playEffect(spawnLocation, Effect.LARGE_SMOKE, 5);
+        projectile.getWorld().spawnParticle(Particle.SMOKE_LARGE, projectile.getLocation(), 5);
+        projectile.getWorld().playSound(spawnLocation, Sound.ENTITY_FIREWORK_LARGE_BLAST, 10, 10);
     }
     protected void playPathEffect(){
-        spawnLocation.getWorld().playEffect(spawnLocation, Effect.SMALL_SMOKE, 5);
+        projectile.getWorld().spawnParticle(Particle.SMOKE_NORMAL, projectile.getLocation(), 5);
     }
     protected void playHitEffect(){
 

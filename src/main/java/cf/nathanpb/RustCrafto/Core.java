@@ -1,5 +1,7 @@
 package cf.nathanpb.RustCrafto;
 
+import cf.nathanpb.RustCrafto.commands.Get;
+import cf.nathanpb.RustCrafto.commands.Update;
 import cf.nathanpb.RustCrafto.item.RustCraftItem;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,7 +17,8 @@ public class Core extends JavaPlugin{
     @Override
     public void onEnable() {
         super.onEnable();
-        this.getCommand("bullet").setExecutor(new getCommand());
+        this.getCommand("rustcraft_get").setExecutor(new Get());
+        this.getCommand("rustcraft_update").setExecutor(new Update());
         RustCraftItem.init();
     }
 

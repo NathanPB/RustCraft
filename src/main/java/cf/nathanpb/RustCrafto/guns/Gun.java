@@ -1,119 +1,172 @@
 package cf.nathanpb.RustCrafto.guns;
 
+import cf.nathanpb.ProjectMetadata.ProjectMetadata;
 import cf.nathanpb.RustCrafto.Core;
+import cf.nathanpb.RustCrafto.Utils.PlayerUtils;
 import cf.nathanpb.RustCrafto.bullets.Bullet;
-import net.minecraft.server.v1_8_R1.EntityInsentient;
-import net.minecraft.server.v1_8_R1.ItemStack;
-import net.minecraft.server.v1_8_R1.NBTTagCompound;
+import cf.nathanpb.RustCrafto.bullets.Bullet9mm;
+import net.minecraft.server.v1_9_R1.ItemStack;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.json.JSONObject;
+
+import java.util.Random;
 
 
 /**
  * Created by nathanpb on 8/14/17.
  */
-public class Gun implements Listener{
+public class Gun{
     private ItemStack item;
-    private boolean reloading = false;
 
     protected double recoilLeft = 0;
     protected double recoilRight = 0;
     protected double recoilUp = 0;
     protected double recoilDown = 0;
+    protected JSONObject meta;
 
-    protected Gun(){}
-    protected Gun(ItemStack stack){
-        Bukkit.getServer().getPluginManager().registerEvents(this, Core.getInstance());
-        this.item = stack;
-        if(stack.getTag() == null){
-            stack.setTag(new NBTTagCompound());
-        }
-        if(!stack.getTag().hasKey("AMMO")){
-            setMagazine(10);
-            setMaxMagazine(10);
-        }
-    }
+    protected ProjectMetadata profile = new ProjectMetadata(".weapons");
+    protected Gun(ItemStack item){
+        this.item = item;
 
-    @EventHandler
-    public void click(PlayerInteractEvent e){
-        if(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            if (CraftItemStack.asNMSCopy(e.getItem()).getTag().hasKey("AMMO")) tryToShot(e.getPlayer());
+        if(getStack().getTag().equals(null)){
+            getStack().setTag(new NBTTagCompound());
         }
+        if(!item.getTag().hasKey("UUID")){
+            long l;
+            do{
+                l = new Random().nextLong();
+            }while (l <= Integer.MAX_VALUE);
+            getStack().getTag().setLong("UUID", l);
+            profile.put(getUUID().toString(), new JSONObject());
+        }
+        this.meta = profile.get(getUUID().toString(), JSONObject.class);
     }
 
     public void tryToShot(HumanEntity en){
-        if(reloading) return;
+        PlayerUtils.sendActionbar(en, ChatColor.BLUE+"Ammo: "+ChatColor.GOLD+getMagazine()+ChatColor.BLUE+"/"+ChatColor.GOLD+getMaxMagazine());
+        if(isReloading()) return;
         if(getMagazine() <= 0){
+            ((Player)en).sendTitle(ChatColor.RED+"Magazine is empty!", "");
             reload(en);
             return;
         }
         shot(en);
     }
     protected void shot(HumanEntity en){
-        getBullet().spawn(en.getEyeLocation());
-        this.setMagazine(getMagazine()-1);
-        applyRecoil(en);
+        try {
+            getBullet().newInstance().spawn(en.getEyeLocation());
+            setMagazine(getMagazine() - 1);
+            applyRecoil(en);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     protected void reload(HumanEntity e){
-        reloading = true;
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                reloading = false;
+        setReloading(true);
+        ((Player)e).sendTitle("", ChatColor.YELLOW+"Reloading gun...");
+        Bukkit.getScheduler().runTaskLater(Core.getInstance(),  ()->{
+            ((Player)e).sendTitle(ChatColor.GREEN + "Gun reloaded!", "");
+                setReloading(false);
                 setMagazine(getMaxMagazine());
-                e.sendMessage("recarregado");
-                this.cancel();
-            }
-        }.runTaskTimer(Core.getInstance(), getReloadingTime(),0);
+            }, getReloadingTime());
     }
 
-    protected void setBullet(Bullet bullet) {
-        this.item.getTag().setString("BULLET_TYPE", bullet.getClass().getName());
+    protected void setBullet(Class<? extends Bullet> bullet) {
+        try{
+            meta.put("BULLET_TYPE", bullet.getName());
+            update();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
-    protected void setMagazine(Integer magazine) {
-        this.item.getTag().remove("AMMO");
-        this.item.getTag().setInt("AMMO", magazine);
+    protected void setMagazine(Integer ammo) {
+        try {
+            meta.put("AMMO", ammo);
+            update();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     protected void setMaxMagazine(Integer maxMagazine) {
-        this.item.getTag().remove("max_AMMO");
-        this.item.getTag().setInt("MAX_AMMO", maxMagazine);
+        try {
+            meta.put("MAX_AMMO", maxMagazine);
+            update();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
     protected void setReloadingTime(Integer Rt){
-        this.item.getTag().remove("RELOADING_TIME");
-        this.item.getTag().setInt("RELOADING_TIME", Rt);
+        try {
+            meta.put("RELOADING_TIME", Rt);
+            update();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    protected void setReloading(Boolean flag){
+        try {
+            meta.put("RELOADING", flag);
+            update();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
-    protected Bullet getBullet() {
-        if(!this.item.getTag().hasKey("BULLET_TYPE")) return null;
+    protected Class<? extends Bullet> getBullet() {
         try {
-            return (Bullet) Class.forName(this.item.getTag().getString("BULLET_TYPE")).newInstance();
+            if (!meta.has("BULLET_TYPE")) meta.put("BULLET_TYPE", Bullet9mm.class.getName());
+            return (Class<? extends Bullet>)Class.forName((String) meta.get("BULLET_TYPE"));
         }catch (Exception e){
             e.printStackTrace();
         }
         return null;
     }
+    protected Long getUUID(){
+        return getStack().getTag().getLong("UUID");
+    }
     protected Integer getMagazine() {
-        if(!this.item.getTag().hasKey("AMMO")) return null;
-        return this.item.getTag().getInt("AMMO");
+        try {
+            if (!meta.has("AMMO")) meta.put("AMMO", 0);
+            return (Integer) meta.get("AMMO");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
     protected Integer getMaxMagazine() {
-        if(!this.item.getTag().hasKey("MAX_AMMO")) return null;
-        return this.item.getTag().getInt("MAX_AMMO");
+        try {
+            if (!meta.has("MAX_AMMO")) meta.put("MAX_AMMO", 10);
+            return (Integer) meta.get("MAX_AMMO");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
     protected ItemStack getStack() {
-        return item;
+        return this.item;
     }
     protected Integer getReloadingTime(){
-        if(!this.item.getTag().hasKey("RELOADING_TIME")) return null;
-        return this.item.getTag().getInt("RELOADING_TIME");
+        try {
+            if (!meta.has("RELOADING_TIME")) meta.put("RELOADING_TIME", 20);
+            return (Integer) meta.get("RELOADING_TIME");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    protected Boolean isReloading(){
+        try {
+            if (!meta.has("RELOADING")) meta.put("RELOADING", false);
+            return (Boolean) meta.get("RELOADING");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
     protected void applyRecoil(HumanEntity p){
         float pitch = p.getLocation().getPitch();
@@ -122,9 +175,17 @@ public class Gun implements Listener{
         yaw -= recoilLeft;
         pitch -= recoilUp;
         pitch += recoilDown;
+
         Location l = p.getLocation();
         l.setYaw(yaw);
         l.setPitch(pitch);
         p.teleport(l);
+
+        //((EntityLiving)((CraftEntity)p).getHandle()).pitch = pitch;
+        //((EntityLiving)((CraftEntity)p).getHandle()).yaw = yaw;
+    }
+
+    protected void update(){
+        profile.put(getUUID().toString(), meta);
     }
 }

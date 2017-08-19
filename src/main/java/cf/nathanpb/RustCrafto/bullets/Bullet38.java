@@ -5,7 +5,7 @@ package cf.nathanpb.RustCrafto.bullets;
  */
 public class Bullet38 extends Bullet{
     public Bullet38(){
-        setGravity(0.2);
+        setGravity(0.3);
         setDamage(6);
     }
 }
