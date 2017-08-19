@@ -4,6 +4,10 @@ version: 2.2
 main: cf.nathanpb.RustCrafto.Core
 
 commands:
- bullet:
-  description: Spelling main command
-  usage: /spelling <cheat|recipes|mana|selfs|burnout|exp|level>
+ rustcraft_get:
+  description: get an RustCraft Item
+  usage: /rustcraft_get itemclass
+ rustcraft_update:
+  description: update rustcraft
+  usage: /rustcraft_update
+
