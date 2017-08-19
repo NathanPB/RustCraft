@@ -13,12 +13,18 @@ public class Update implements CommandExecutor{
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if(!commandSender.isOp()) return false;
-        String s2 = SystemUtils.shellCommand("./autobuild.sh");
-        if(s2.contains("BUILD SUCCESSFUL")) {
-            commandSender.sendMessage(ChatColor.GOLD + "Atualizado com sucesso");
-        }else {
-            commandSender.sendMessage(ChatColor.GOLD + "Falha ao compilar");
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                String s2 = SystemUtils.shellCommand("./autobuild.sh");
+                if (s2.contains("BUILD SUCCESSFUL")) {
+                    commandSender.sendMessage(ChatColor.GOLD + "Atualizado com sucesso");
+                } else {
+                    commandSender.sendMessage(ChatColor.GOLD + "Falha ao compilar");
+                }
+            }
+        }.start();
         return true;
     }
 }
