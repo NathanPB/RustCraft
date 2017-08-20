@@ -54,10 +54,8 @@ public class Gun{
     }
 
     public void tryToShot(HumanEntity en){
-        PlayerUtils.sendActionbar(en, ChatColor.BLUE+"Ammo: "+ChatColor.GOLD+getMagazine()+ChatColor.BLUE+"/"+ChatColor.GOLD+getMaxMagazine());
         if(isReloading()) return;
         if(getMagazine() <= 0){
-            ((Player)en).sendTitle(ChatColor.RED+"Magazine is empty!", "");
             reload(en);
             return;
         }
@@ -74,15 +72,13 @@ public class Gun{
     }
     protected void reload(HumanEntity e){
         setReloading(true);
-        ((Player)e).sendTitle("", ChatColor.YELLOW+"Reloading gun...");
         Bukkit.getScheduler().runTaskLater(Core.getInstance(),  ()->{
-            ((Player)e).sendTitle(ChatColor.GREEN + "Gun reloaded!", "");
                 setReloading(false);
                 setMagazine(getMaxMagazine());
             }, getReloadingTime());
     }
 
-    protected void setBullet(Class<? extends Bullet> bullet) {
+    public void setBullet(Class<? extends Bullet> bullet) {
         try{
             meta.put("BULLET_TYPE", bullet.getName());
             update();
@@ -90,7 +86,7 @@ public class Gun{
             e.printStackTrace();
         }
     }
-    protected void setMagazine(Integer ammo) {
+    public void setMagazine(Integer ammo) {
         try {
             meta.put("AMMO", ammo);
             update();
@@ -98,7 +94,7 @@ public class Gun{
             e.printStackTrace();
         }
     }
-    protected void setMaxMagazine(Integer maxMagazine) {
+    public void setMaxMagazine(Integer maxMagazine) {
         try {
             meta.put("MAX_AMMO", maxMagazine);
             update();
@@ -106,7 +102,7 @@ public class Gun{
             e.printStackTrace();
         }
     }
-    protected void setReloadingTime(Integer Rt){
+    public void setReloadingTime(Integer Rt){
         try {
             meta.put("RELOADING_TIME", Rt);
             update();
@@ -114,7 +110,7 @@ public class Gun{
             e.printStackTrace();
         }
     }
-    protected void setReloading(Boolean flag){
+    public void setReloading(Boolean flag){
         try {
             meta.put("RELOADING", flag);
             update();
@@ -123,7 +119,7 @@ public class Gun{
         }
     }
 
-    protected Class<? extends Bullet> getBullet() {
+    public Class<? extends Bullet> getBullet() {
         try {
             if (!meta.has("BULLET_TYPE")) meta.put("BULLET_TYPE", Bullet9mm.class.getName());
             return (Class<? extends Bullet>)Class.forName((String) meta.get("BULLET_TYPE"));
@@ -132,10 +128,10 @@ public class Gun{
         }
         return null;
     }
-    protected Long getUUID(){
+    public Long getUUID(){
         return getStack().getTag().getLong("UUID");
     }
-    protected Integer getMagazine() {
+    public Integer getMagazine() {
         try {
             if (!meta.has("AMMO")) meta.put("AMMO", 0);
             return (Integer) meta.get("AMMO");
@@ -144,7 +140,7 @@ public class Gun{
         }
         return null;
     }
-    protected Integer getMaxMagazine() {
+    public Integer getMaxMagazine() {
         try {
             if (!meta.has("MAX_AMMO")) meta.put("MAX_AMMO", 10);
             return (Integer) meta.get("MAX_AMMO");
@@ -153,10 +149,10 @@ public class Gun{
         }
         return null;
     }
-    protected ItemStack getStack() {
+    public ItemStack getStack() {
         return this.item;
     }
-    protected Integer getReloadingTime(){
+    public Integer getReloadingTime(){
         try {
             if (!meta.has("RELOADING_TIME")) meta.put("RELOADING_TIME", 20);
             return (Integer) meta.get("RELOADING_TIME");
@@ -165,7 +161,7 @@ public class Gun{
         }
         return null;
     }
-    protected Boolean isReloading(){
+    public Boolean isReloading(){
         try {
             if (!meta.has("RELOADING")) meta.put("RELOADING", false);
             return (Boolean) meta.get("RELOADING");
@@ -174,7 +170,7 @@ public class Gun{
         }
         return null;
     }
-    protected void applyRecoil(HumanEntity p){
+    public void applyRecoil(HumanEntity p){
         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0));
         float pitch = p.getLocation().getPitch();
         float yaw = p.getLocation().getYaw();

@@ -42,4 +42,9 @@ public class Radiation {
         if(p2.get("RADIATION", Float.class)-rad < 0) return;
         p2.put("RADIATION", p2.get("RADIATION", Float.class)-rad);
     }
+    public static float getRadiation(Player p){
+        ProjectMetadata p2 = new ProjectMetadata(p.getUniqueId().toString(), Core.PlayerProfileDatabase);
+        if(!p2.hasKey("RADIATION")) p2.put("RADIATION", 0.0);
+        return p2.get("RADIATION", Float.class);
+    }
 }

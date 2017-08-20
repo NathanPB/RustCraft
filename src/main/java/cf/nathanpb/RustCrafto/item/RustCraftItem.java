@@ -3,6 +3,7 @@ package cf.nathanpb.RustCrafto.item;
 import cf.nathanpb.ProjectMetadata.ProjectMetadata;
 import cf.nathanpb.RustCrafto.Core;
 import com.mojang.authlib.GameProfileRepository;
+import jdk.internal.org.objectweb.asm.Opcodes;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -23,6 +24,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,10 +34,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by nathanpb on 8/15/17.
@@ -192,6 +191,12 @@ public class RustCraftItem implements Listener{
         if(b == null) return false;
         if(!metadata.hasKey(b.toString())) return false;
         return metadata.get(b.toString(), String.class).equals(this.getClass().getName());
+    }
+    public static RustCraftItem getInstanceFrom(ItemStack i){
+        for(Map.Entry<Class, RustCraftItem> entry : itemHashMap.entrySet()){
+            if(entry.getValue().instanceOf(i)) return entry.getValue();
+        }
+        return null;
     }
 
     protected boolean isWearing(LivingEntity p){
