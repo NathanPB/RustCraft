@@ -32,7 +32,7 @@ public class ItemWeaponM416 extends RustCraftItem implements Listener{
     protected void onServerTick() {
         super.onServerTick();
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if(instanceOf(p.getItemInHand())) PlayerInfo.gunInHand.replace(p, new GunM416(p)); else PlayerInfo.gunInHand.replace(p, null);
+            if(instanceOf(p.getItemInHand())) PlayerInfo.gunInHand.put(p, new GunM416(p)); else PlayerInfo.gunInHand.put(p, null);
         }
     }
 }

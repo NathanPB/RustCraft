@@ -31,7 +31,7 @@ public class ItemWeaponBarrettM98B extends RustCraftItem {
     protected void onServerTick() {
         super.onServerTick();
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if(instanceOf(p.getItemInHand())) PlayerInfo.gunInHand.replace(p, new GunBarrettM98B(p)); else PlayerInfo.gunInHand.replace(p, null);
+            if(instanceOf(p.getItemInHand())) PlayerInfo.gunInHand.put(p, new GunBarrettM98B(p)); else PlayerInfo.gunInHand.put(p, null);
         }
     }
 }

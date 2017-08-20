@@ -29,9 +29,8 @@ public class ItemWeaponAk47 extends RustCraftItem implements Listener{
     @Override
     protected void onServerTick() {
         super.onServerTick();
-        Bukkit.broadcastMessage("ata");
         for(Player p : Bukkit.getOnlinePlayers()) {
-            if(instanceOf(p.getItemInHand())) PlayerInfo.gunInHand.replace(p, new GunAK47(p)); else PlayerInfo.gunInHand.replace(p, null);
+            if(instanceOf(p.getItemInHand())) PlayerInfo.gunInHand.put(p, new GunAK47(p)); else PlayerInfo.gunInHand.put(p, null);
         }
     }
 }
