@@ -44,7 +44,7 @@ public class Radiation {
     }
     public static Integer getRadiation(Player p){
         ProjectMetadata p2 = new ProjectMetadata(p.getUniqueId().toString(), Core.PlayerProfileDatabase);
-        if(!p2.hasKey("RADIATION")) p2.put("RADIATION", 0.0);
+        if(!p2.hasKey("RADIATION")) p2.put("RADIATION", 0);
         return p2.get("RADIATION", Integer.class);
     }
 }
