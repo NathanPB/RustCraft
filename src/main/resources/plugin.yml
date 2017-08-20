@@ -4,10 +4,7 @@ version: 2.2
 main: cf.nathanpb.RustCrafto.Core
 
 commands:
- rustcraft_get:
-  description: get an RustCraft Item
-  usage: /rustcraft_get itemclass
- rustcraft_update:
-  description: update rustcraft
-  usage: /rustcraft_update
+ rustcraft:
+  description: RustCraft main command
+  usage: /rustcraft help
 

@@ -7,13 +7,17 @@ import cf.nathanpb.RustCrafto.bullets.Bullet;
 import cf.nathanpb.RustCrafto.bullets.Bullet9mm;
 import net.minecraft.server.v1_9_R1.ItemStack;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.PacketPlayOutEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.json.JSONObject;
 
+import java.util.HashSet;
 import java.util.Random;
 
 
@@ -169,20 +173,29 @@ public class Gun{
         return null;
     }
     protected void applyRecoil(HumanEntity p){
+
         float pitch = p.getLocation().getPitch();
         float yaw = p.getLocation().getYaw();
         yaw += recoilRight;
         yaw -= recoilLeft;
         pitch -= recoilUp;
         pitch += recoilDown;
-
+        /*
         Location l = p.getLocation();
         l.setYaw(yaw);
         l.setPitch(pitch);
         p.teleport(l);
 
         //((EntityLiving)((CraftEntity)p).getHandle()).pitch = pitch;
-        //((EntityLiving)((CraftEntity)p).getHandle()).yaw = yaw;
+        //((EntityLiving)((CraftEntity)p).getHandle()).yaw = yaw;*/
+        Block block = p.getTargetBlock((HashSet<Byte>)null, 200);
+        PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook packet = new PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook(p.getEntityId(),
+                (byte) block.getX(),
+                (byte) block.getY(),
+                (byte) block.getZ(),
+                (byte) 140,
+                (byte) -360, false);
+            ((CraftPlayer)p).getHandle().playerConnection.sendPacket(packet);
     }
 
     protected void update(){

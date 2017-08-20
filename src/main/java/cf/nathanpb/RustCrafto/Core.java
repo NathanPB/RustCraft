@@ -1,7 +1,6 @@
 package cf.nathanpb.RustCrafto;
 
-import cf.nathanpb.RustCrafto.commands.Get;
-import cf.nathanpb.RustCrafto.commands.Update;
+import cf.nathanpb.RustCrafto.commands.RustCraft;
 import cf.nathanpb.RustCrafto.item.RustCraftItem;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,10 +17,9 @@ public class Core extends JavaPlugin{
     public static final File PlayerProfileDatabase = new File("ProjectMetadataDatabase/PlayerProfile");
     @Override
     public void onEnable() {
-        if(!PlayerProfileDatabase.exists()) PlayerProfileDatabase.mkdirs();
         super.onEnable();
-        this.getCommand("rustcraft_get").setExecutor(new Get());
-        this.getCommand("rustcraft_update").setExecutor(new Update());
+        if(!PlayerProfileDatabase.exists()) PlayerProfileDatabase.mkdirs();
+        this.getCommand("rustcraft").setExecutor(new RustCraft());
         RustCraftItem.init();
     }
 
