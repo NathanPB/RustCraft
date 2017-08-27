@@ -1,15 +1,16 @@
 package cf.nathanpb.RustCrafto.Utils;
 
-import cf.nathanpb.RustCrafto.PlayerInfo;
+import cf.nathanpb.ProjectMetadata.ProjectMetadata;
 import cf.nathanpb.RustCrafto.Radiation;
-import cf.nathanpb.RustCrafto.commands.RustCraft;
-import cf.nathanpb.RustCrafto.item.RustCraftItem;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.json.JSONObject;
 
 /**
  * Created by nathanpb on 8/18/17.
@@ -23,8 +24,16 @@ public class PlayerUtils {
     }
     public static void sendInformation(Player p){
         String s = ChatColor.BLUE+"Radiation: "+ChatColor.GOLD+ Radiation.getRadiation(p)+"%"+ChatColor.BLUE;
-        if(PlayerInfo.gunInHand.get(p) != null) {
-            s += " - Ammo: " + ChatColor.GOLD +PlayerInfo.gunInHand.get(p).getMagazine()+"/"+PlayerInfo.gunInHand.get(p).getMaxMagazine();
+        if(p.getItemInHand() != null && CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null) {
+            if (CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().hasKey("UUID")) {
+                try{
+                    ProjectMetadata pm  = new ProjectMetadata(".weapons");
+                    JSONObject json = pm.get(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID")+"", JSONObject.class);
+                    s += " - Ammo: " + ChatColor.GOLD + json.getInt("AMMO") + "/" + json.getInt("MAX_AMMO");}
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
         sendActionbar(p, s);
     }
