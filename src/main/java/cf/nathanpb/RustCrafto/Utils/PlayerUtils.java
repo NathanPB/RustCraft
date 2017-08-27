@@ -1,6 +1,7 @@
 package cf.nathanpb.RustCrafto.Utils;
 
 import cf.nathanpb.ProjectMetadata.ProjectMetadata;
+import cf.nathanpb.RustCrafto.Core;
 import cf.nathanpb.RustCrafto.Radiation;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
@@ -27,12 +28,11 @@ public class PlayerUtils {
         if(p.getItemInHand() != null && CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null) {
             if (CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().hasKey("UUID")) {
                 try {
-                    ProjectMetadata pm = new ProjectMetadata(".weapons");
-                    JSONObject json = pm.get(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID") + "", JSONObject.class);
-                    if (json.has("RELOADING") && json.getBoolean("RELOADING")) {
+                    ProjectMetadata pm = new ProjectMetadata(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID")+"", Core.WeaponsDatabase);
+                    if (pm.hasKey("RELOADING") && pm.get("RELOADING", Boolean.class)) {
                         s += " - Ammo: " + ChatColor.GOLD + "RELOADING";
                     } else {
-                        s += " - Ammo: " + ChatColor.GOLD + json.getInt("AMMO") + "/" + json.getInt("MAX_AMMO");
+                        s += " - Ammo: " + ChatColor.GOLD + pm.get("AMMO", Integer.class) + "/" + pm.get("MAX_AMMO", Integer.class);
                     }
                 }
                 catch(Exception e){
