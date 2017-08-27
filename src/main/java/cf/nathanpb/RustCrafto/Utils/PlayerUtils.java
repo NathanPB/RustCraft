@@ -31,7 +31,7 @@ public class PlayerUtils {
                     ProjectMetadata pm = new ProjectMetadata(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID")+"", Core.WeaponsDatabase);
                     if (pm.hasKey("RELOADING") && pm.get("RELOADING", Boolean.class)) {
                         s += " - Ammo: " + ChatColor.GOLD + "RELOADING";
-                    } else if(pm.hasKey("AMMO") && pm.hasKey("MAX_AMMO")){
+                    } else if(pm.hasKey("AMMO") && pm.hasKey("MAX_AMMO")) {
                         s += " - Ammo: " + ChatColor.GOLD + pm.get("AMMO", Integer.class) + "/" + pm.get("MAX_AMMO", Integer.class);
                     }
                 }
