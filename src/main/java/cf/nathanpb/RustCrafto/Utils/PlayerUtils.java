@@ -7,6 +7,7 @@ import net.minecraft.server.v1_9_R1.IChatBaseComponent;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
 import net.minecraft.server.v1_9_R1.PacketPlayOutChat;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.LivingEntity;
@@ -25,7 +26,7 @@ public class PlayerUtils {
     }
     public static void sendInformation(Player p){
         String s = ChatColor.BLUE+"Radiation: "+ChatColor.GOLD+ Radiation.getRadiation(p)+"%"+ChatColor.BLUE;
-        if(p.getItemInHand() != null && CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null) {
+        if(!p.getItemInHand().equals(Material.AIR) && CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null) {
             if (CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().hasKey("UUID")) {
                 try {
                     ProjectMetadata pm = new ProjectMetadata(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID")+"", Core.WeaponsDatabase);
