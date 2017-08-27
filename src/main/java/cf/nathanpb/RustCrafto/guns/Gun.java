@@ -33,9 +33,8 @@ public class Gun{
     protected double recoilRight = 0;
     protected double recoilUp = 0;
     protected double recoilDown = 0;
-    protected JSONObject meta;
 
-    protected ProjectMetadata profile = new ProjectMetadata(".weapons");
+    protected ProjectMetadata profile;
     protected Gun(ItemStack item){
         this.item = item;
 
@@ -48,9 +47,8 @@ public class Gun{
                 l = new Random().nextLong();
             }while (l <= Integer.MAX_VALUE);
             getStack().getTag().setLong("UUID", l);
-            profile.put(getUUID().toString(), new JSONObject());
+            profile = new ProjectMetadata(getUUID().toString(), Core.WeaponsDatabase);
         }
-        this.meta = profile.get(getUUID().toString(), JSONObject.class);
     }
 
     public void tryToShot(HumanEntity en){
@@ -80,40 +78,35 @@ public class Gun{
 
     public void setBullet(Class<? extends Bullet> bullet) {
         try{
-            meta.put("BULLET_TYPE", bullet.getName());
-            update();
+            profile.put("BULLET_TYPE", bullet.getName());
         }catch (Exception e){
             e.printStackTrace();
         }
     }
     public void setMagazine(Integer ammo) {
         try {
-            meta.put("AMMO", ammo);
-            update();
+            profile.put("AMMO", ammo);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
     public void setMaxMagazine(Integer maxMagazine) {
         try {
-            meta.put("MAX_AMMO", maxMagazine);
-            update();
+            profile.put("MAX_AMMO", maxMagazine);
         } catch (Exception e){
             e.printStackTrace();
         }
     }
     public void setReloadingTime(Integer Rt){
         try {
-            meta.put("RELOADING_TIME", Rt);
-            update();
+            profile.put("RELOADING_TIME", Rt);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
     public void setReloading(Boolean flag){
         try {
-            meta.put("RELOADING", flag);
-            update();
+            profile.put("RELOADING", flag);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -121,8 +114,8 @@ public class Gun{
 
     public Class<? extends Bullet> getBullet() {
         try {
-            if (!meta.has("BULLET_TYPE")) meta.put("BULLET_TYPE", Bullet9mm.class.getName());
-            return (Class<? extends Bullet>)Class.forName((String) meta.get("BULLET_TYPE"));
+            if (!profile.hasKey("BULLET_TYPE")) profile.put("BULLET_TYPE", Bullet9mm.class.getName());
+            return (Class<? extends Bullet>)Class.forName((String) profile.get("BULLET_TYPE", String.class));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -133,8 +126,8 @@ public class Gun{
     }
     public Integer getMagazine() {
         try {
-            if (!meta.has("AMMO")) meta.put("AMMO", 0);
-            return (Integer) meta.get("AMMO");
+            if (!profile.hasKey("AMMO")) profile.put("AMMO", 0);
+            return  profile.get("AMMO", Integer.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -142,8 +135,8 @@ public class Gun{
     }
     public Integer getMaxMagazine() {
         try {
-            if (!meta.has("MAX_AMMO")) meta.put("MAX_AMMO", 10);
-            return (Integer) meta.get("MAX_AMMO");
+            if (!profile.hasKey("MAX_AMMO")) profile.put("MAX_AMMO", 10);
+            return profile.get("MAX_AMMO", Integer.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -154,8 +147,8 @@ public class Gun{
     }
     public Integer getReloadingTime(){
         try {
-            if (!meta.has("RELOADING_TIME")) meta.put("RELOADING_TIME", 20);
-            return (Integer) meta.get("RELOADING_TIME");
+            if (!profile.hasKey("RELOADING_TIME")) profile.put("RELOADING_TIME", 20);
+            return profile.get("RELOADING_TIME", Integer.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -163,8 +156,8 @@ public class Gun{
     }
     public Boolean isReloading(){
         try {
-            if (!meta.has("RELOADING")) meta.put("RELOADING", false);
-            return (Boolean) meta.get("RELOADING");
+            if (!profile.hasKey("RELOADING")) profile.put("RELOADING", false);
+            return profile.get("RELOADING", Boolean.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -185,7 +178,4 @@ public class Gun{
         p.teleport(l);
     }
 
-    protected void update(){
-        profile.put(getUUID().toString(), meta);
-    }
 }
