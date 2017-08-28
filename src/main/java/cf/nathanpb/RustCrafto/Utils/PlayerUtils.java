@@ -26,21 +26,19 @@ public class PlayerUtils {
     }
     public static void sendInformation(Player p){
         String s = ChatColor.BLUE+"Radiation: "+ChatColor.GOLD+ Radiation.getRadiation(p)+"%"+ChatColor.BLUE;
-        System.out.println(p.getItemInHand());
-        if(!p.getItemInHand().equals(Material.AIR) && p.getItemInHand() != null &&
-                CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null) {
-
-            if (CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().hasKey("UUID")) {
-                try {
-                    ProjectMetadata pm = new ProjectMetadata(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID")+"", Core.WeaponsDatabase);
-                    if (pm.hasKey("RELOADING") && pm.get("RELOADING", Boolean.class)) {
-                        s += " - Ammo: " + ChatColor.GOLD + "RELOADING";
-                    } else if(pm.hasKey("AMMO") && pm.hasKey("MAX_AMMO")) {
-                        s += " - Ammo: " + ChatColor.GOLD + pm.get("AMMO", Integer.class) + "/" + pm.get("MAX_AMMO", Integer.class);
+        if(!p.getItemInHand().equals(Material.AIR)){
+            if(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null){
+                if (CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().hasKey("UUID")) {
+                    try {
+                        ProjectMetadata pm = new ProjectMetadata(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID") + "", Core.WeaponsDatabase);
+                        if (pm.hasKey("RELOADING") && pm.get("RELOADING", Boolean.class)) {
+                            s += " - Ammo: " + ChatColor.GOLD + "RELOADING";
+                        } else if (pm.hasKey("AMMO") && pm.hasKey("MAX_AMMO")) {
+                            s += " - Ammo: " + ChatColor.GOLD + pm.get("AMMO", Integer.class) + "/" + pm.get("MAX_AMMO", Integer.class);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }
-                catch(Exception e){
-                    e.printStackTrace();
                 }
             }
         }
