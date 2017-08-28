@@ -26,6 +26,7 @@ public class PlayerUtils {
     }
     public static void sendInformation(Player p){
         String s = ChatColor.BLUE+"Radiation: "+ChatColor.GOLD+ Radiation.getRadiation(p)+"%"+ChatColor.BLUE;
+        System.out.println(p.getItemInHand());
         if(!p.getItemInHand().equals(Material.AIR) && p.getItemInHand() != null &&
                 CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null) {
 
