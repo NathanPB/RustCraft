@@ -27,7 +27,7 @@ public class PlayerUtils {
     public static void sendInformation(Player p){
         String s = ChatColor.BLUE+"Radiation: "+ChatColor.GOLD+ Radiation.getRadiation(p)+"%"+ChatColor.BLUE;
         if(!p.getItemInHand().equals(Material.AIR)){
-            if(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null){
+            if(CraftItemStack.asNMSCopy(p.getItemInHand()) != null && CraftItemStack.asNMSCopy(p.getItemInHand()).getTag() != null){
                 if (CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().hasKey("UUID")) {
                     try {
                         ProjectMetadata pm = new ProjectMetadata(CraftItemStack.asNMSCopy(p.getItemInHand()).getTag().getLong("UUID") + "", Core.WeaponsDatabase);
