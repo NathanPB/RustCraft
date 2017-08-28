@@ -21,7 +21,7 @@ public class WallExplosion implements Listener{
         sendRustCraftExplosion(e.getEntity().getLocation());
     }
     public static void sendRustCraftExplosion(Location l){
-        Firework fw = (Firework) l.getWorld().spawnEntity(l, EntityType.FIREWORK);
+        Firework fw = l.getWorld().spawn(l, Firework.class);
         FireworkMeta fwm = fw.getFireworkMeta();
         FireworkEffect effect = FireworkEffect.builder()
                 .flicker(false)

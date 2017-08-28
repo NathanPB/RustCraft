@@ -115,7 +115,7 @@ public class Gun{
     public Class<? extends Bullet> getBullet() {
         try {
             if (!profile.hasKey("BULLET_TYPE")) profile.put("BULLET_TYPE", Bullet9mm.class.getName());
-            return (Class<? extends Bullet>)Class.forName((String) profile.get("BULLET_TYPE", String.class));
+            return (Class<? extends Bullet>) Class.forName(profile.get("BULLET_TYPE", String.class));
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -125,43 +125,25 @@ public class Gun{
         return getStack().getTag().getLong("UUID");
     }
     public Integer getMagazine() {
-        try {
-            if (!profile.hasKey("AMMO")) profile.put("AMMO", 0);
-            return  profile.get("AMMO", Integer.class);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        if (!profile.hasKey("AMMO")) profile.put("AMMO", 0);
+        return  profile.get("AMMO", Integer.class);
     }
     public Integer getMaxMagazine() {
-        try {
-            if (!profile.hasKey("MAX_AMMO")) profile.put("MAX_AMMO", 10);
-            return profile.get("MAX_AMMO", Integer.class);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        if (!profile.hasKey("MAX_AMMO")) profile.put("MAX_AMMO", 10);
+        return profile.get("MAX_AMMO", Integer.class);
+
     }
     public ItemStack getStack() {
         return this.item;
     }
     public Integer getReloadingTime(){
-        try {
-            if (!profile.hasKey("RELOADING_TIME")) profile.put("RELOADING_TIME", 20);
-            return profile.get("RELOADING_TIME", Integer.class);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        if (!profile.hasKey("RELOADING_TIME")) profile.put("RELOADING_TIME", 20);
+        return profile.get("RELOADING_TIME", Integer.class);
+
     }
     public Boolean isReloading(){
-        try {
-            if (!profile.hasKey("RELOADING")) profile.put("RELOADING", false);
-            return profile.get("RELOADING", Boolean.class);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        if (!profile.hasKey("RELOADING")) profile.put("RELOADING", false);
+        return profile.get("RELOADING", Boolean.class);
     }
     public void applyRecoil(HumanEntity p){
         p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10, 0));
