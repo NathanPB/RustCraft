@@ -34,13 +34,13 @@ public class WallExplosion implements Listener{
         fwm.setPower(0);
         fw.setFireworkMeta(fwm);
         fw.detonate();
-        for(int x=-3; x<=3; x++){
+        /*for(int x=-3; x<=3; x++){
             for(int y=-3; y<=3; y++){
                 for(int z=-3; z<=3; z++){
                     Location l2 = new Location(l.getWorld(), l.getX()+x, l.getY()+y, l.getZ()+z);
                     l2.getBlock().setType(Material.BEDROCK);
                 }
             }
-        }
+        }*/
     }
 }
